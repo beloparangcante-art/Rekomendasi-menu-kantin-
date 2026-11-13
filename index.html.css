@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Rekomendasi Menu Kantin</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #6a5acd, #c77dff);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 500px;
+    }
+
+    .judul {
+      text-align: center;
+      color: white;
+      margin-bottom: 20px;
+    }
+
+    .judul h1 {
+      font-size: 30px;
+      margin-bottom: 8px;
+    }
+
+    .judul p {
+      font-size: 15px;
+    }
+
+    .card {
+      background: white;
+      padding: 25px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      margin-bottom: 7px;
+      font-weight: bold;
+      color: #444;
+    }
+
+    select,
+    input {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      font-size: 16px;
+      outline: none;
+    }
+
+    select:focus,
+    input:focus {
+      border-color: #7b2cbf;
+    }
+
+    button {
+      width: 100%;
+      padding: 13px;
+      margin-top: 20px;
+      border: none;
+      border-radius: 10px;
+      background: #7b2cbf;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #5a189a;
+    }
+
+    #hasil {
+      margin-top: 20px;
+    }
+
+    .judul-hasil {
+      color: white;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .menu {
+      background: white;
+      padding: 15px;
+      margin-bottom: 10px;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    }
+
+    .menu h3 {
+      color: #6a1b9a;
+      margin-bottom: 5px;
+    }
+
+    .harga {
+      font-weight: bold;
+      color: #333;
+    }
+
+    .status {
+      margin-top: 5px;
+      color: #555;
+      font-size: 14px;
+    }
+
+    .pesan {
+      background: white;
+      padding: 15px;
+      border-radius: 12px;
+      text-align: center;
+      color: #555;
+    }
+
+    .footer {
+      text-align: center;
+      color: white;
+      margin-top: 15px;
+      font-size: 13px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <div class="judul">
+      <h1>🍽️ Rekomendasi Menu Kantin</h1>
+      <p>Pilih menu sesuai dengan budget kamu</p>
+    </div>
+
+    <div class="card">
+
+      <label for="jenis">Pilih Jenis Menu</label>
+
+      <select id="jenis">
+        <option value="1">🍚 Makanan</option>
+        <option value="2">🥤 Minuman</option>
+      </select>
+
+      <label for="budget">Masukkan Budget (Rp)</label>
+
+      <input
+        type="number"
+        id="budget"
+        placeholder="Contoh: 12000"
+        min="0"
+      >
+
+      <button onclick="rekomendasi()">
+        🔎 Cari Rekomendasi
+      </button>
+
+    </div>
+
+    <div id="hasil"></div>
+
+    <div class="footer">
+      Program Rekomendasi Menu Kantin
+    </div>
+
+  </div>
+
+
+  <script>
+    // Daftar menu makanan
+    const makanan = [
+      {
+        nama: "Nasi Goreng",
+        harga: 12000
+      },
+      {
+        nama: "Mie Goreng",
+        harga: 10000
+      },
+      {
+        nama: "Nasi Kuning",
+        harga: 10000
+      },
+      {
+        nama: "Ayam Geprek",
+        harga: 15000
+      },
+      {
+        nama: "Bakso",
+        harga: 13000
+      }
+    ];
+
+    // Daftar menu minuman
+    const minuman = [
+      {
+        nama: "Es Teh",
+        harga: 5000
+      },
+      {
+        nama: "Air Mineral",
+        harga: 4000
+      },
+      {
+        nama: "Es Jeruk",
+        harga: 7000
+      },
+      {
+        nama: "Jus Lemon",
+        harga: 10000
+      }
+    ];
+
+
+    // Mengubah angka menjadi format Rupiah
+    function rupiah(angka) {
+      return "Rp " + angka.toLocaleString("id-ID");
+    }
+
+
+    // Fungsi rekomendasi menu
+    function rekomendasi() {
+
+      const jenis = document.getElementById("jenis").value;
+      const budget = Number(
+        document.getElementById("budget").value
+      );
+
+      const hasil = document.getElementById("hasil");
+
+
+      // Mengecek budget
+      if (budget <= 0 || isNaN(budget)) {
+
+        hasil.innerHTML = `
+          <div class="pesan">
+            ⚠️ Silakan masukkan budget terlebih dahulu.
+          </div>
+        `;
+
+        return;
+      }
+
+
+      // Menentukan jenis menu
+      let daftarMenu;
+
+      if (jenis === "1") {
+        daftarMenu = makanan;
+      } else {
+        daftarMenu = minuman;
+      }
+
+
+      // Mencari menu yang sesuai dengan budget
+      const menuSesuai = daftarMenu.filter(function(menu) {
+        return menu.harga <= budget;
+      });
+
+
+      // Jika tidak ada menu
+      if (menuSesuai.length === 0) {
+
+        hasil.innerHTML = `
+          <div class="pesan">
+            😔 Tidak ada menu yang sesuai
+            dengan budget ${rupiah(budget)}.
+          </div>
+        `;
+
+        return;
+      }
+
+
+      // Menampilkan hasil
+      hasil.innerHTML = `
+        <h2 class="judul-hasil">
+          ✨ Rekomendasi Menu
+        </h2>
+      `;
+
+
+      menuSesuai.forEach(function(menu) {
+
+        hasil.innerHTML += `
+          <div class="menu">
+
+            <h3>${menu.nama}</h3>
+
+            <p class="harga">
+              ${rupiah(menu.harga)}
+            </p>
+
+            <p class="status">
+              ✓ Sesuai dengan budget kamu
+            </p>
+
+          </div>
+        `;
+      });
+    }
+  </script>
+
+</body>
+</html>
